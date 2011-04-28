@@ -73,7 +73,7 @@ class ChainedHashtable:
             return None
         cur_node = llist.head
         while cur_node != None:
-            if cur_node.key = key:
+            if cur_node.key == key:
                 return cur_node.value
             else:
                 cur_node = cur_node.next
@@ -85,7 +85,7 @@ class ChainedHashtable:
     def __init__(self):
         self.links = [None] * size
 
-def LinearHashtable:
+class LinearHashtable:
     """ Linear Hashtable
         
         Keys and Values are stored in an associative array, and probed for values by searching linearly through the table
@@ -123,7 +123,7 @@ def LinearHashtable:
         self.entries = [None] * size
 
 
-def QuadraticHashtable:
+class QuadraticHashtable:
     """ Quadratic Hashtable
 
         Keys and Values are stored in an associative array, and probed for values by searching quadratically through the table
@@ -160,7 +160,7 @@ def QuadraticHashtable:
     def __init__(self):
         self.entries = [None] * size
 
-def DoubleHashtable:
+class DoubleHashtable:
     """ Double Hashtable
 
         Keys and Values are stored in an associative array, and probed for values by searching with a double hashing probing sequence

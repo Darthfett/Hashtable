@@ -1,6 +1,6 @@
 class LinkedList:
 
-    def push(self, prev = None, new):
+    def push(self, new, prev = None):
         if prev == None:
             new.next = self.head
             self.head = new
