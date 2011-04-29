@@ -24,7 +24,7 @@ class Link:
 
     def __str__(self):
         if self.next == None:
-            return str(self.value)
+            return str(self.value) + " "
         else:
             return str(self.value) + " " + str(self.next)
 
@@ -90,6 +90,22 @@ class ChainedHashtable:
                 cur_node = cur_node.next
         return None
     
+    def search(self, key):
+        llist = self.links[self.hash(key)]
+        if llist == None:
+            return str(self.hash(key))
+        search_result = ""
+        cur_node = llist.head
+        search_result += str(self.hash(key)) + " " 
+        while cur_node != None:
+            search_result += str(cur_node.value) + " "
+            if cur_node.key == key:
+                return search_result
+            else:
+                cur_node = cur_node.next
+        return search_result
+
+
     def insert(self, value):
         self.put(value, value)
 
@@ -122,6 +138,19 @@ class LinearHashtable:
             entry = self.entries[self.hash(key, i)]
         return entry.value
 
+    def search(self, key):
+        i = 0
+        search_result = ""
+        entry = self.entries[self.hash(key, i)]
+        search_result = str(self.hash(key, i)) + " "
+        while (entry == None or entry.key != key):
+            i+=1
+            if i == LinearHashtable.Size:
+                return search_result + "-1"
+            entry = self.entries[self.hash(key, i)]
+            search_result += str(self.hash(key, i)) + " "
+        return search_result
+
     def put(self, key, value):
         i = 0
         entry = self.entries[self.hash(key, i)]
@@ -146,7 +175,7 @@ class LinearHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
         return "\n".join(lines)
     
     def __init__(self):
@@ -184,6 +213,19 @@ class QuadraticHashtable:
             self.entries[self.hash(key, i)] = entry
         else:
             entry.value = value
+
+    def search(self, key):
+        i = 0
+        search_result = ""
+        entry = self.entries[self.hash(key, i)]
+        search_result = str(self.hash(key, i)) + " "
+        while (entry == None or entry.key != key):
+            i+=1
+            if i == LinearHashtable.Size:
+                return search_result + "-1"
+            entry = self.entries[self.hash(key, i)]
+            search_result += str(self.hash(key, i)) + " "
+        return search_result
     
     def hash(self, key, i):
         return QuadraticHash(key, i, QuadraticHashtable.Size)
@@ -194,7 +236,7 @@ class QuadraticHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
         return "\n".join(lines)
 
     def __init__(self):
@@ -222,7 +264,7 @@ class DoubleHashtable:
         entry = self.entries[self.hash(key, i)]
         while (entry != None and entry.key != key):
             i+=1
-            if i == LinearHashtable.Size:
+            if i+1 == LinearHashtable.Size:
                 #raise Exception("Table is Full!")
                 return
             entry = self.entries[self.hash(key, i)]
@@ -231,6 +273,19 @@ class DoubleHashtable:
             self.entries[self.hash(key, i)] = entry
         else:
             entry.value = value
+
+    def search(self, key):
+        i = 0
+        search_result = ""
+        entry = self.entries[self.hash(key, i)]
+        search_result = str(self.hash(key, i)) + " "
+        while (entry == None or entry.key != key):
+            i+=1
+            if i+1 == LinearHashtable.Size:
+                return search_result + "-1"
+            entry = self.entries[self.hash(key, i)]
+            search_result += str(self.hash(key, i)) + " "
+        return search_result
 
     def insert(self, value):
         self.put(value, value)
@@ -241,7 +296,7 @@ class DoubleHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
         return "\n".join(lines)
 
     def __init__(self):
