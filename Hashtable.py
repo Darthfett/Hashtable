@@ -9,6 +9,9 @@ class Entry:
         Used in every hashtable but the ChainedHashtable, an Entry is a key, value pair
     """
 
+    def __str__(self):
+        return str(self.value)
+
     def __init__(self, key = 0, value = 0):
         self.key = key
         self.value = value
@@ -18,6 +21,13 @@ class Link:
 
         Used in the ChainedHashtable, a Link is a key, value pair for use in a linked list.
     """
+
+    def __str__(self):
+        if self.next == None:
+            return str(self.value)
+        else:
+            return str(self.value) + " " + str(self.next)
+
     def __init__(self, key = 0, value = 0, next = None):
         self.key = key
         self.value = value
@@ -28,21 +38,21 @@ def DivisionHash(key, size):
 
 def AuxiliaryHash(key, size):
     A = 0.618
-    return math.floor(size * ((key * A) % 1))
+    return int(math.floor(size * ((key * A) % 1)))
 
 def LinearHash(key, i, size):
     return (AuxiliaryHash(key, size) + i) % size
 
 def AuxiliaryHash2(key, size):
-    return 1 + (key % size - 1)
+    return 1 + (key % (size - 1))
 
 def QuadraticHash(key, i, size):
     c_1 = 0.5
     c_2 = 0.5
-    return (AuxiliaryHash(key, size) + c_1 * i + c_2 * i * i) % size
+    return int((AuxiliaryHash(key, size) + c_1 * i + c_2 * i * i) % size)
 
 def DoubleHash(key, i, size):
-    return (DivisionHash(key, size) + i * AuxiliaryHash2(key, size)) % size
+    return int((DivisionHash(key, size) + i * AuxiliaryHash2(key, size)) % size)
 
 class ChainedHashtable:
     """ Chained Hashtable
@@ -50,13 +60,14 @@ class ChainedHashtable:
         A linked list of Keys and Values are stored in the links array, which holds a linked list of all the mapped values
     """
 
-    size = 23
+    Size = 23
 
     def put(self, key, value):
         llist = self.links[self.hash(key)]
         if llist == None:
-            node = Node(key = key, value = value)
+            node = Link(key = key, value = value)
             llist = LinkedList(head=node)
+            self.links[self.hash(key)] = llist
             return
         cur_node = llist.head
         while cur_node != None:
@@ -65,7 +76,7 @@ class ChainedHashtable:
                 return
             else:
                 cur_node = cur_node.next
-        llist.push(Node(key = key, value = value))
+        llist.push(Link(key = key, value = value))
 
     def get(self, key):
         llist = self.links[self.hash(key)]
@@ -79,25 +90,34 @@ class ChainedHashtable:
                 cur_node = cur_node.next
         return None
     
+    def insert(self, value):
+        self.put(value, value)
+
     def hash(self, key):
-        return DivisionHash(key,size)
+        return DivisionHash(key, ChainedHashtable.Size)
+
+    def __str__(self):
+        lines = []
+        for i in range(len(self.links)):
+            lines.append("" + str(i) + "\t" + ("" if self.links[i] == None else str(self.links[i])))
+        return "\n".join(lines)
 
     def __init__(self):
-        self.links = [None] * size
+        self.links = [None] * ChainedHashtable.Size
 
 class LinearHashtable:
     """ Linear Hashtable
         
         Keys and Values are stored in an associative array, and probed for values by searching linearly through the table
     """
-    size = 32
+    Size = 32
 
     def get(self, key):
         i = 0
         entry = self.entries[self.hash(key, i)]
         while (entry == None or entry.key != key):
             i+=1
-            if i == size:
+            if i == LinearHashtable.Size:
                 return None
             entry = self.entries[self.hash(key, i)]
         return entry.value
@@ -107,20 +127,30 @@ class LinearHashtable:
         entry = self.entries[self.hash(key, i)]
         while (entry != None and entry.key != key):
             i+=1
-            if i == size:
-                raise Exception("Table is Full!")
+            if i == LinearHashtable.Size:
+                #raise Exception("Table is Full!")
                 return
             entry = self.entries[self.hash(key, i)]
         if entry == None:
             entry = Entry(key = key, value = value)
+            self.entries[self.hash(key, i)] = entry
         else:
             entry.value = value
+    
+    def insert(self, value):
+        self.put(value, value)
 
     def hash(self, key, i):
-        return LinearHash(key, i, size)
+        return LinearHash(key, i, LinearHashtable.Size)
+
+    def __str__(self):
+        lines = []
+        for i in range(len(self.entries)):
+            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+        return "\n".join(lines)
     
     def __init__(self):
-        self.entries = [None] * size
+        self.entries = [None] * LinearHashtable.Size
 
 
 class QuadraticHashtable:
@@ -128,14 +158,14 @@ class QuadraticHashtable:
 
         Keys and Values are stored in an associative array, and probed for values by searching quadratically through the table
     """
-    size = 32
+    Size = 32
 
     def get(self, key):
         i = 0
         entry = self.entries[self.hash(key, i)]
         while (entry == None or entry.key != key):
             i+=1
-            if i == size:
+            if i == QuadraticHashtable.Size:
                 return None
             entry = self.entries[self.hash(key, i)]
         return entry.value
@@ -145,34 +175,44 @@ class QuadraticHashtable:
         entry = self.entries[self.hash(key, i)]
         while (entry != None and entry.key != key):
             i+=1
-            if i == size:
-                raise Exception("Table is Full!")
+            if i == LinearHashtable.Size:
+                #raise Exception("Table is Full!")
                 return
             entry = self.entries[self.hash(key, i)]
         if entry == None:
             entry = Entry(key = key, value = value)
+            self.entries[self.hash(key, i)] = entry
         else:
             entry.value = value
     
     def hash(self, key, i):
-        return QuadraticHash(key, i, size)
+        return QuadraticHash(key, i, QuadraticHashtable.Size)
+
+    def insert(self, value):
+        self.put(value, value)
+
+    def __str__(self):
+        lines = []
+        for i in range(len(self.entries)):
+            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+        return "\n".join(lines)
 
     def __init__(self):
-        self.entries = [None] * size
+        self.entries = [None] * QuadraticHashtable.Size
 
 class DoubleHashtable:
     """ Double Hashtable
 
         Keys and Values are stored in an associative array, and probed for values by searching with a double hashing probing sequence
     """
-    size = 31
+    Size = 31
 
     def get(self, key):
         i = 0
         entry = self.entries[self.hash(key, i)]
         while (entry == None or entry.key != key):
             i+=1
-            if i == size:
+            if i == DoubleHashtable.Size:
                 return None
             entry = self.entries[self.hash(key, i)]
         return entry.value
@@ -182,18 +222,28 @@ class DoubleHashtable:
         entry = self.entries[self.hash(key, i)]
         while (entry != None and entry.key != key):
             i+=1
-            if i == size:
-                raise Exception("Table is Full!")
+            if i == LinearHashtable.Size:
+                #raise Exception("Table is Full!")
                 return
             entry = self.entries[self.hash(key, i)]
         if entry == None:
             entry = Entry(key = key, value = value)
+            self.entries[self.hash(key, i)] = entry
         else:
             entry.value = value
 
+    def insert(self, value):
+        self.put(value, value)
+
     def hash(self, key, i):
-        return DoubleHash(key, i, size)
+        return DoubleHash(key, i, DoubleHashtable.Size)
+
+    def __str__(self):
+        lines = []
+        for i in range(len(self.entries)):
+            lines.append("" + str(i) + "\t" + ("" if self.entries[i] == None else str(self.entries[i].value)))
+        return "\n".join(lines)
 
     def __init__(self):
-        self.entries = [None] * size
+        self.entries = [None] * DoubleHashtable.Size
 

@@ -1,0 +1,16 @@
+Student Name: Casey Kuball
+Student ID:   1200841243
+Assignment #  9
+
+Implementation of a Chained, Linear, Quadratic, and Double Hashtable
+
+How to compile:
+    1. Do nothing.  No steps are needed to compile.
+
+How to run:
+    1. Type in "python parser.py", and concatenate the filename of an input file.
+
+    Example:
+        python parser.py input.txt
+
+    2. Output table views of chained, linear, quadratic, and double hashtables are in the chain.txt, linear.txt, quadratic.txt, and double.txt, respectively.

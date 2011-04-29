@@ -44,5 +44,11 @@ class LinkedList:
 
         node.next = cur_node
 
+    def __str__(self):
+        if self.head == None:
+            return ""
+        else:
+            return str(self.head)
+
     def __init__(self, head = None):
         self.head = head
