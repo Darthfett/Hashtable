@@ -115,7 +115,10 @@ class ChainedHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.links)):
-            lines.append("" + str(i) + "\t" + ("" if self.links[i] == None else str(self.links[i])))
+            if self.links[i] == None:
+                lines.append("" + str(i) + "\t")
+            else:
+                lines.append("" + str(i) + "\t" + str(self.links[i]))
         return "\n".join(lines)
 
     def __init__(self):
@@ -175,7 +178,10 @@ class LinearHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
+            if self.entries[i] == None:
+                lines.append("" + str(i) + "\t" + "-1")
+            else:
+                lines.append("" + str(i) + "\t" + str(self.entries[i].value))
         return "\n".join(lines)
     
     def __init__(self):
@@ -236,7 +242,10 @@ class QuadraticHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
+            if self.entries[i] == None:
+                lines.append("" + str(i) + "\t" + "-1")
+            else:
+                lines.append("" + str(i) + "\t" + str(self.entries[i].value))
         return "\n".join(lines)
 
     def __init__(self):
@@ -296,7 +305,10 @@ class DoubleHashtable:
     def __str__(self):
         lines = []
         for i in range(len(self.entries)):
-            lines.append("" + str(i) + "\t" + ("-1" if self.entries[i] == None else str(self.entries[i].value)))
+            if self.entries[i] == None:
+                lines.append("" + str(i) + "\t" + "-1")
+            else:
+                lines.append("" + str(i) + "\t" + str(self.entries[i].value))
         return "\n".join(lines)
 
     def __init__(self):
